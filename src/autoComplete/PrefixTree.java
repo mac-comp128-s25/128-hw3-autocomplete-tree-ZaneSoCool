@@ -24,7 +24,45 @@ public class PrefixTree {
      * @param word
      */
     public void add(String word){
-        //TODO: complete me
+        char[] characters = word.toCharArray();
+        TreeNode current = root;
+
+        if(contains(word)){
+            return;
+        }
+
+        for (int i = 0 ; i < characters.length ; i++) {
+            char c = characters[i];
+            
+            if (!current.children.containsKey(c)){ //add new letter
+
+                TreeNode newChar = new TreeNode();
+                newChar.letter = c;
+
+                //System.out.println("ADDED CHAR : " + c);
+
+                if(i == characters.length - 1){
+                    //System.out.println("ADDED WORD : " + word);
+                    newChar.isWord = true;
+                    size++;
+                }
+
+                current.children.put(c, newChar);
+                current = newChar;
+
+            } else {
+
+                //System.out.println("HAD CHAR : " + word);
+
+                if(i == characters.length - 1){
+                    current.isWord = true;
+                    size++;
+                   // System.out.println("ADDED WORD : " + word);
+                } else {
+                    current = current.children.get(c);
+                } 
+            }
+        }
     }
 
     /**
@@ -33,7 +71,29 @@ public class PrefixTree {
      * @return true if contained in the tree.
      */
     public boolean contains(String word){
-        //TODO: complete me
+        char[] characters = word.toCharArray();
+        TreeNode current = root;
+
+        for (int i = 0 ; i < characters.length ; i++) {
+            char c = characters[i];
+            
+            if(current.children.containsKey(c)){
+                System.out.println("HAS CHAR : " + c);
+                current = current.children.get(c);
+            } else{
+                return false;
+            }
+
+            if(i == characters.length - 1 && current.isWord){ //at end of word
+                System.out.println("HAS WORD : " + word);
+                return true;
+            }
+
+            
+
+            
+        }
+
         return false;
     }
 
