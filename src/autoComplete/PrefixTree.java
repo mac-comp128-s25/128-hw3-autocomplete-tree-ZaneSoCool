@@ -39,10 +39,7 @@ public class PrefixTree {
                 TreeNode newChar = new TreeNode();
                 newChar.letter = c;
 
-                //System.out.println("ADDED CHAR : " + c);
-
                 if(i == characters.length - 1){
-                    //System.out.println("ADDED WORD : " + word);
                     newChar.isWord = true;
                     size++;
                 }
@@ -52,12 +49,10 @@ public class PrefixTree {
 
             } else {
 
-                //System.out.println("HAD CHAR : " + word);
-
                 if(i == characters.length - 1){
                     current.isWord = true;
                     size++;
-                   // System.out.println("ADDED WORD : " + word);
+
                 } else {
                     current = current.children.get(c);
                 } 
@@ -78,20 +73,15 @@ public class PrefixTree {
             char c = characters[i];
             
             if(current.children.containsKey(c)){
-                System.out.println("HAS CHAR : " + c);
                 current = current.children.get(c);
             } else{
                 return false;
             }
 
             if(i == characters.length - 1 && current.isWord){ //at end of word
-                System.out.println("HAS WORD : " + word);
                 return true;
             }
 
-            
-
-            
         }
 
         return false;
@@ -104,8 +94,35 @@ public class PrefixTree {
      * @return list of words with prefix
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
-        //TODO: complete me
-        return null;
+        ArrayList<String> wordsWithPrefix = new ArrayList<>();
+
+        char[] characters = prefix.toCharArray();
+        TreeNode current = root;
+        int index = 0;
+
+        while(index < characters.length &&  current.children.containsKey(characters[index])){ //builds the prefix
+            current = current.children.get(characters[index]);
+            index++;
+        }
+
+        recursiveWordFinder(current, wordsWithPrefix, prefix);
+
+        return wordsWithPrefix;
+    }
+
+    private void recursiveWordFinder(TreeNode current, ArrayList<String> wordsWithPrefix, String builtWord){
+    
+        if (current.isWord){ //checks if current word is valid
+            wordsWithPrefix.add(builtWord);
+        }
+        
+        for (Map.Entry<Character, TreeNode> entry : current.children.entrySet()) { //happens for each TreeNode's children
+
+            String builtWordCopy = new String(builtWord); //create a copy of the current word in String format
+            builtWordCopy = builtWordCopy + entry.getKey(); //add the next character to the aformentioned word
+
+            recursiveWordFinder(entry.getValue(), wordsWithPrefix, builtWordCopy); //recursively calls itself
+        }
     }
 
     /**
